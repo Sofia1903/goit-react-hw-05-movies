@@ -1,30 +1,32 @@
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { fetchMovieReviews } from '..//../services/MoviApi';
-import { useState, useEffect } from 'react';
-import ErrorMessage from 'components/Error/Error';
-import ReviewsContent from 'components/ReviewsContent/ReviewsContent';
+import { fetchMovies } from '../../Api/fetchMovies';
 
 export default function Reviews() {
   const { movieId } = useParams();
-  const [reviews, setReviews] = useState();
-  const [error, setError] = useState(null);
+  const [allReviews, setAllReviews] = useState('');
 
   useEffect(() => {
-    fetchMovieReviews(movieId)
-      .then(data => {
-        if (data.length === 0) {
-          setError('There are no reviews');
-          return;
-        }
-        setReviews(data);
+    const url = `https://api.themoviedb.org/3/movie/${movieId}/reviews?language=en-US&page=1`;
+    fetchMovies(url)
+      .then(results => {
+        setAllReviews(results);
       })
-      .catch(error => setError(error.message));
+      .catch(err => console.error('error:' + err));
   }, [movieId]);
 
-  return (
-    <div>
-      {error && <ErrorMessage message={error} />}
-      {reviews && <ReviewsContent reviews={reviews} />}
-    </div>
+  return allReviews.total_results ? (
+    <ul>
+      {allReviews.results.map(result => {
+        return (
+          <li key={result.id}>
+            <h3>{result.author}</h3>
+            <p>{result.content}</p>
+          </li>
+        );
+      })}
+    </ul>
+  ) : (
+    <p>We don't have any reviews for this movie.</p>
   );
 }

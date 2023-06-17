@@ -1,30 +1,38 @@
-import { fetchMovieCasts } from '..//../services/MoviApi';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import ErrorMessage from 'components/Error/Error';
-import Credits from 'components/Credits/Credits';
+import { fetchMovies } from '../../Api/fetchMovies';
 
 export default function Cast() {
   const { movieId } = useParams();
-  const [credits, setCredits] = useState(null);
-  const [error, setError] = useState();
+  const [credits, setCredits] = useState('');
 
   useEffect(() => {
-    fetchMovieCasts(movieId)
-      .then(data => {
-        if (data.length === 0) {
-          setError('There is no information about the cast');
-          return;
-        }
-        setCredits(data);
+    const url = `https://api.themoviedb.org/3/movie/${movieId}/credits?language=en-US`;
+    fetchMovies(url)
+      .then(results => {
+        setCredits(results);
       })
-      .catch(error => setError(error.message));
+      .catch(err => console.error('error:' + err));
   }, [movieId]);
 
   return (
-    <div>
-      {error && <ErrorMessage message={error} />}
-      {credits && <Credits credits={credits} />}
-    </div>
+    credits && (
+      <ul>
+        {credits.cast.map(credit => {
+          return (
+            <li key={credit.id}>
+              <img
+                width="100px"
+                height="150px"
+                src={`https://image.tmdb.org/t/p/original/${credit.profile_path}`}
+                alt={credit.name}
+              />
+              <h3>{credit.name}</h3>
+              <p>{credit.character}</p>
+            </li>
+          );
+        })}
+      </ul>
+    )
   );
 }
