@@ -1,65 +1,54 @@
-import { getSearchMovie } from 'api/API';
-import MovieLink from 'components/Movie/MovieLink';
-import React, { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
+import SearchForm from '../components/Searchform/Searchform';
+import { getSearchMovies } from '../service/FetchApi';
 
 const Movies = () => {
-  const [movieList, setMovieList] = useState();
-  const [searchQuery, setSearchQuery] = useSearchParams();
-  const [query, setQuery] = useState(searchQuery.get('query'))
-  const [value, setValue] = useState(searchQuery.get('query') || '');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
 
-  console.log(`MovieList: `, movieList);
-  console.log(`searchQuery: `, searchQuery);
-  console.log(`value: `, value);
+  const handleFormSubmit = searchMovieId => {
+    if (!searchMovieId) return setSearchParams({});
 
- 
+    setSearchParams({ movieId: searchMovieId });
+  };
+  const movieId = searchParams.get(`movieId`) ?? '';
 
   useEffect(() => {
-    if (query) {
-      getSearchMovie(query)
-        .then(data => {
-          setMovieList(data.results);
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    }
-  }, [query,setSearchQuery]);
+    if (!movieId) return;
+    setLoading(true);
 
-  const handleSubmit = event => {
-    event.preventDefault(); 
-    setSearchQuery({ query: value  });   
-    setQuery(value)
-  };
-
-  const handleChange = event => {
-    setValue(event.target.value);
-  };
+    getSearchMovies(movieId)
+      .then(({ results }) => {
+        if (!results.length) {
+          alert(`there is no movie with the "${movieId}"`);
+        }
+        setData(results);
+      })
+      .catch(error => alert('error:' + error))
+      .finally(setLoading(false));
+  }, [movieId]);
 
   return (
-    <>
-      <form
-        onSubmit={event => {
-          handleSubmit(event);
-        }}
-      >
-        <input
-          plaseholder="Search movie"
-          name="query"
-          value={value}
-          onChange={handleChange}
-        ></input>
-        <button type="submit">Submit</button>
-      </form>
-      {movieList && (
+    <div>
+      <SearchForm onSubmit={handleFormSubmit} />
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
         <ul>
-          {movieList.map(movie => (
-            <MovieLink movie={movie} key={movie.id} />
+          {data.map(({ id, title }) => (
+            <li key={id}>
+              <Link to={`/movies/${id}`} state={{ from: location }}>
+                {title}
+              </Link>
+            </li>
           ))}
         </ul>
       )}
-    </>
+    </div>
   );
 };
 

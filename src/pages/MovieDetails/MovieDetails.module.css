@@ -1,0 +1,104 @@
+MovieDetails.module.css .container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.backLink {
+  display: inline-block;
+  margin-bottom: 20px;
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.loading {
+  text-align: center;
+  font-size: 18px;
+  color: #888;
+}
+
+.title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.releaseDate {
+  font-size: 16px;
+  color: #888;
+}
+
+.overview {
+  margin-bottom: 20px;
+}
+
+.genres {
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.poster {
+  width: 250px;
+  height: 350px;
+  margin-bottom: 20px;
+}
+
+.userScore {
+  font-weight: bold;
+}
+
+.navigation {
+  margin-top: 20px;
+  list-style: none;
+}
+
+.navigation li {
+  /* display: inline-block; */
+  margin-right: 10px;
+}
+
+.navigation a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.navigation a.active {
+  color: #ff5500;
+}
+
+.reviewsContainer {
+  margin-top: 20px;
+}
+
+.review {
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 16px;
+}
+
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  font-size: 18px;
+  color: #555;
+}
